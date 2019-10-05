@@ -14,7 +14,14 @@ import q_li_nv
 class Ui_MainWindow(QtWidgets.QDialog):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(511, 439)
+        
+        MainWindow.setFixedWidth(525)
+        MainWindow.setFixedHeight(439)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icon/nhan_vien.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
+        MainWindow.setIconSize(QtCore.QSize(30, 30))
+
         MainWindow.setStyleSheet("QFrame{background-color: rgb(190, 255, 248);}")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")

@@ -15,12 +15,18 @@ class InsertDialog(QtWidgets.QDialog):
     def __init__(self):
         super(InsertDialog, self).__init__()
 
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icon/add1.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
+        
+
         self.QBtn = QtWidgets.QPushButton()
         self.QBtn.setText("Thêm")
+        self.QBtn.setStyleSheet("background: #CCFFFF;\n""height:40px; \n""font-size:18px")
 
         self.setWindowTitle("Thêm nhân viên")
-        self.setFixedWidth(300)
-        self.setFixedHeight(300)
+        self.setFixedWidth(500)
+        self.setFixedHeight(500)
         
         self.QBtn.clicked.connect(self.add_employee)
 
@@ -28,6 +34,7 @@ class InsertDialog(QtWidgets.QDialog):
 
         self.nameinput = QtWidgets.QLineEdit()
         self.nameinput.setPlaceholderText("Nhập tên *")
+        self.nameinput.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.nameinput)
 
         
@@ -39,6 +46,7 @@ class InsertDialog(QtWidgets.QDialog):
         self.branchinput.addItem("Support")
         self.branchinput.addItem("Account")
         self.branchinput.addItem("Manager")
+        self.branchinput.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.branchinput)
 
        
@@ -46,16 +54,19 @@ class InsertDialog(QtWidgets.QDialog):
         self.onlyInt = QtGui.QIntValidator()
         self.mobileinput.setValidator(self.onlyInt) # chi nhap dc so
         self.mobileinput.setPlaceholderText("Nhập Số điện thoại")
+        self.mobileinput.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.mobileinput)
 
         self.addressinput = QtWidgets.QLineEdit()
         self.addressinput.setPlaceholderText("Nhập địa chỉ")
+        self.addressinput.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.addressinput)
 
         self.hourwork = QtWidgets.QLineEdit()
         self.onlyInt = QtGui.QIntValidator()
         self.hourwork.setValidator(self.onlyInt) # chi nhap dc so
         self.hourwork.setPlaceholderText("Nhập tổng số giờ làm *")
+        self.hourwork.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.hourwork)
 
         self.hoursalary = QtWidgets.QComboBox()
@@ -63,6 +74,7 @@ class InsertDialog(QtWidgets.QDialog):
         self.hoursalary.addItem("15.000 vnđ")
         self.hoursalary.addItem("20.000 vnđ")
         self.hoursalary.addItem("30.000 vnđ")
+        self.hoursalary.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.hoursalary)
 
        
@@ -88,7 +100,7 @@ class InsertDialog(QtWidgets.QDialog):
         else:
             hoursalary=30
 
-        salary = int(hourwork)*int(hoursalary)*1000
+        
         if name=='':
             QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Error', 'Vui lòng nhập tên.')
         elif branch=='----Chọn bộ phận----': 
@@ -97,6 +109,7 @@ class InsertDialog(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Error', 'Vui lòng nhập tổng số giờ làm.')
 
         else:
+            salary = int(hourwork)*int(hoursalary)*1000
             try:
                 self.mydb = mysql.connector.connect(
                   host="localhost",
@@ -125,13 +138,17 @@ class InsertDialog(QtWidgets.QDialog):
 class SearchDialog(QtWidgets.QDialog):
     def __init__(self):
         super(SearchDialog, self).__init__()
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icon/s1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
 
         self.QBtn = QtWidgets.QPushButton()
         self.QBtn.setText("Tìm kiếm")
+        self.QBtn.setStyleSheet("background: #CCFFFF;\n""height:40px; \n""font-size:18px")
 
         self.setWindowTitle("Tìm kiếm nhân viên")
         self.setFixedWidth(300)
-        self.setFixedHeight(100)
+        self.setFixedHeight(200)
         self.QBtn.clicked.connect(self.search_employee)
         layout = QtWidgets.QVBoxLayout()
 
@@ -139,6 +156,7 @@ class SearchDialog(QtWidgets.QDialog):
         self.onlyInt = QtGui.QIntValidator()
         self.searchinput.setValidator(self.onlyInt)
         self.searchinput.setPlaceholderText("Nhập mã id cần tìm")
+        self.searchinput.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.searchinput)
         layout.addWidget(self.QBtn)
         self.setLayout(layout)
@@ -164,7 +182,8 @@ class SearchDialog(QtWidgets.QDialog):
                 row = self.mycursor.fetchone()
                 
                 serachresult = "Id : "+str(row[0])+'\n'+"Tên : "+str(row[1])+'\n'+"Bộ phận : "+str(row[2])+'\n'+"Số điện thoại : "+str(row[3])+'\n'+"địa chỉ : "+str(row[4])+'\n'+"lương : "+str(row[5])+" vnđ"
-                QtWidgets.QMessageBox.information(QtWidgets.QMessageBox(), 'Successful', serachresult)
+               
+                QtWidgets.QMessageBox.information(QtWidgets.QMessageBox(), 'Thông tin', serachresult)
                 self.mydb.commit()
 
                 
@@ -176,8 +195,13 @@ class DeleteDialog(QtWidgets.QDialog):
     def __init__(self):
         super(DeleteDialog, self).__init__()
 
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icon/d1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
+
         self.QBtn = QtWidgets.QPushButton()
         self.QBtn.setText("Delete")
+        self.QBtn.setStyleSheet("background: #CCFFFF;\n""height:40px; \n""font-size:18px")
 
         self.setWindowTitle("Xóa nhân viên")
         self.setFixedWidth(300)
@@ -189,6 +213,7 @@ class DeleteDialog(QtWidgets.QDialog):
         self.onlyInt = QtGui.QIntValidator()
         self.deleteinput.setValidator(self.onlyInt)
         self.deleteinput.setPlaceholderText("Nhập id của nhân viên cần xóa")
+        self.deleteinput.setStyleSheet("border:1px solid #00FF00;\n""height:30px; \n""border-radius:8px;\n""font-size:18px")
         layout.addWidget(self.deleteinput)
         layout.addWidget(self.QBtn)
         self.setLayout(layout)
@@ -228,10 +253,13 @@ class DeleteDialog(QtWidgets.QDialog):
                 QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Error', 'Mã id nhân viên không tồn tại.')
 
 
-class Ui_QMainWindow(object):
+class Ui_QMainWindow(QtWidgets.QDialog):
     def setupUi(self, QMainWindow):
-        QMainWindow.setObjectName("QMainWindow")
-        QMainWindow.resize(802, 600)
+        
+        # QMainWindow.resize(802, 600)
+        QMainWindow.setFixedWidth(760)
+        QMainWindow.setFixedHeight(600)
+
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icon/nhan_vien.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QMainWindow.setWindowIcon(icon)
