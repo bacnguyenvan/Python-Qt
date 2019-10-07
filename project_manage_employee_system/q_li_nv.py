@@ -126,7 +126,7 @@ class InsertDialog(QtWidgets.QDialog):
                 self.mycursor.execute("INSERT INTO luong (name,salary) VALUES ('{}','{}') ".format(name,salary))
                 
                 self.mydb.commit()
-                self.loaddata()
+                
                
                 QtWidgets.QMessageBox.information(QtWidgets.QMessageBox(),'Successful','Thêm nhân viên thành công.')
                 
