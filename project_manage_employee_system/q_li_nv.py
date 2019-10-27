@@ -11,6 +11,55 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector
 import Login
 
+
+class Thread(QtCore.QThread):
+    data = QtCore.pyqtSignal(dict)
+
+    def __init__(self, parent=None):
+        super(Thread, self).__init__(parent)
+        self._stopped = True
+        self._mutex = QtCore.QMutex()
+
+    def stop(self):
+        self._mutex.lock()
+        self._stopped = True
+        self._mutex.unlock()
+
+    def run(self):
+        self._stopped = False
+        
+        while True:
+            if self._stopped:
+                break
+            self.sleep(1)
+            data={};
+            self.data.emit(data)
+    
+
+class Thread_2(QtCore.QThread):
+    data = QtCore.pyqtSignal(dict)
+
+    def __init__(self, parent=None):
+        super(Thread_2, self).__init__(parent)
+        self._stopped = True
+        self._mutex = QtCore.QMutex()
+
+    def stop(self):
+        self._mutex.lock()
+        self._stopped = True
+        self._mutex.unlock()
+
+    def run(self):
+        self._stopped = False
+        
+        while True:
+            if self._stopped:
+                break
+            self.sleep(3)
+            data={};
+            self.data.emit(data)
+
+
 class InsertDialog(QtWidgets.QDialog):
     def __init__(self):
         super(InsertDialog, self).__init__()
@@ -78,12 +127,11 @@ class InsertDialog(QtWidgets.QDialog):
         layout.addWidget(self.hoursalary)
 
        
-
         layout.addWidget(self.QBtn)
         self.setLayout(layout)
+        
    
     def add_employee(self):
-
 
         name = self.nameinput.text()
         branch = self.branchinput.itemText(self.branchinput.currentIndex())
@@ -130,7 +178,11 @@ class InsertDialog(QtWidgets.QDialog):
                
                 QtWidgets.QMessageBox.information(QtWidgets.QMessageBox(),'Successful','Thêm nhân viên thành công.')
                 
+                self.mycursor.close()
                 self.close()
+
+
+
             except Exception:
                 QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Error', 'Không thể thêm nhân viên.')
 
@@ -254,11 +306,13 @@ class DeleteDialog(QtWidgets.QDialog):
 
 
 class Ui_QMainWindow(QtWidgets.QDialog):
+
+    
     def setupUi(self, QMainWindow):
         
         # QMainWindow.resize(802, 600)
         QMainWindow.setFixedWidth(760)
-        QMainWindow.setFixedHeight(600)
+        QMainWindow.setFixedHeight(640)
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icon/nhan_vien.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -275,7 +329,7 @@ class Ui_QMainWindow(QtWidgets.QDialog):
         self.tableWidget.setProperty("showDropIndicator", True)
         self.tableWidget.setColumnCount(7)
         self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.setHorizontalHeaderLabels(("Id", "Tên", "Bộ phận", "SĐT", "Địa chỉ","Giờ làm","Hệ số lương"))
+        self.tableWidget.setHorizontalHeaderLabels(("Id", "Tên", "Bộ phận", "SĐT", "Địa chỉ","Giờ làm (giờ)","Hệ số lương"))
         self.tableWidget.setObjectName("tableWidget")
         self.btn_them = QtWidgets.QPushButton(self.centralwidget)
         self.btn_them.setGeometry(QtCore.QRect(10, 80, 101, 51))
@@ -364,7 +418,7 @@ class Ui_QMainWindow(QtWidgets.QDialog):
         self.tableWidget.setProperty("showDropIndicator", True)
         self.tableWidget_2.setColumnCount(3)
         self.tableWidget_2.verticalHeader().setVisible(False)
-        self.tableWidget_2.setHorizontalHeaderLabels(("Mã Id", "Tên", "Lương"))
+        self.tableWidget_2.setHorizontalHeaderLabels(("Mã Id", "Tên", "Lương (vnđ)"))
         self.tableWidget_2.setObjectName("tableWidget_2")
         self.tableWidget_2.horizontalHeader().setDefaultSectionSize(199)
         self.tableWidget_2.horizontalHeader().setMinimumSectionSize(0)
@@ -380,19 +434,61 @@ class Ui_QMainWindow(QtWidgets.QDialog):
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(240, 550, 161, 31))
+        self.label_4.setGeometry(QtCore.QRect(420, 550, 161, 31))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
+
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
-        self.label_5.setGeometry(QtCore.QRect(460, 550, 151, 31))
+        self.label_5.setGeometry(QtCore.QRect(590, 550, 151, 31))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
         self.label_5.setFont(font)
         self.label_5.setObjectName("label_5")
+
+
+        ##
+    
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(220, 550, 151, 31))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_6.setFont(font)
+        self.label_6.setStyleSheet("color:green;")
+        self.label_6.setObjectName("label_6")
+
+
+        self.label_7 = QtWidgets.QLabel(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(10, 550, 230, 31))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_7.setFont(font)
+        self.label_7.setObjectName("label_7")
+
+        self.label_8 = QtWidgets.QLabel(self.centralwidget)
+        self.label_8.setGeometry(QtCore.QRect(10, 580, 250, 31))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(220, 580, 250, 31))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_9.setFont(font)
+        self.label_9.setStyleSheet("color:red;")
+        self.label_9.setObjectName("label_8")
+
+        
+
         ###
         self.btn_load = QtWidgets.QPushButton(self.centralwidget)
         self.btn_load.setGeometry(QtCore.QRect(10, 10, 51, 51))
@@ -402,7 +498,7 @@ class Ui_QMainWindow(QtWidgets.QDialog):
 "border-radius : 10px;")
         self.btn_load.setText("")
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap("icon/r3.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap("icon/house.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_load.setIcon(icon5)
         self.btn_load.setIconSize(QtCore.QSize(30, 30))
         self.btn_load.setObjectName("btn_load")
@@ -419,7 +515,7 @@ class Ui_QMainWindow(QtWidgets.QDialog):
 
 
         ###  Event   ###
-        self.btn_load.clicked.connect(self.loaddata)
+        # self.btn_load.clicked.connect(self.loaddata)
         self.btn_them.clicked.connect(self.insert)
         self.btn_search.clicked.connect(self.search)
         self.btn_xoa.clicked.connect(self.delete)
@@ -440,6 +536,12 @@ class Ui_QMainWindow(QtWidgets.QDialog):
         self.label_4.setText(_translate("QMainWindow", "Nguyễn Văn Bắc - 16119065"))
         self.label_5.setText(_translate("QMainWindow", "Lê Ngọc Thành - 16119146"))
 
+        self.label_4.setText(_translate("QMainWindow", "Nguyễn Văn Bắc - 16119065"))
+        self.label_5.setText(_translate("QMainWindow", "Lê Ngọc Thành - 16119146"))
+
+        self.label_7.setText(_translate("QMainWindow", "Nhân viên có tiền lương cao nhất: "))
+        self.label_8.setText(_translate("QMainWindow", "Nhân viên có giờ làm thấp nhất: "))
+    
     def loaddata(self):
         self.mydb = mysql.connector.connect(
               host="localhost",
@@ -473,6 +575,7 @@ class Ui_QMainWindow(QtWidgets.QDialog):
 
         self.mycursor.close()
 
+        
       
     
     def insert(self):
@@ -480,14 +583,71 @@ class Ui_QMainWindow(QtWidgets.QDialog):
         dlg.exec_() 
     
     def search(self):
-        dlg = SearchDialog()
+        dlg = SearchDialog()  
         dlg.exec_() 
 
     def delete(self):
         dlg = DeleteDialog()
         dlg.exec_()
+       
+   
     def exit(self):
         exit()
+
+    def max_salary(self):
+        self.mydb = mysql.connector.connect(
+              host="localhost",
+              user="root",
+              passwd="",
+              database="tt_rtos"
+            )
+        self.mycursor = self.mydb.cursor() 
+
+
+        self.mycursor.execute("SELECT MAX(salary) FROM luong ")
+        salary_max = self.mycursor.fetchone()[0]
+        
+        self.mycursor.execute("SELECT quan_li_nv.name,MAX(salary) FROM quan_li_nv INNER JOIN luong ON salary = %d AND luong.id = quan_li_nv.id"%salary_max)
+
+        
+        result_max = self.mycursor.fetchone()
+        print("max salary: ",result_max);
+        
+        
+
+
+        self.label_6.setText(str(result_max))
+
+
+    def min_hour(self):
+        self.mydb = mysql.connector.connect(
+              host="localhost",
+              user="root",
+              passwd="",
+              database="tt_rtos"
+            )
+        self.mycursor = self.mydb.cursor() 
+
+        self.mycursor.execute("SELECT MIN(hourwork) FROM quan_li_nv ")
+        min_hour = self.mycursor.fetchone()[0]
+
+        self.mycursor.execute("SELECT name,MIN(hourwork) FROM quan_li_nv WHERE hourwork=%d"%min_hour)
+        
+        
+        result_min = self.mycursor.fetchone()
+        print("min hour: ",result_min);
+        
+        
+        self.label_9.setText(str(result_min))
+
+    def callback_function1(self,data):
+        self.loaddata()
+
+    def callback_function2(self):
+        self.max_salary()
+
+    def callback_function3(self):
+        self.min_hour()
 
 
 if __name__ == "__main__":
@@ -496,6 +656,21 @@ if __name__ == "__main__":
     QMainWindow = QtWidgets.QMainWindow()
     ui = Ui_QMainWindow()
     ui.setupUi(QMainWindow)
-    ui.loaddata()
     QMainWindow.show()
+
+    
+    
+
+    thread1 = Thread()
+    thread1.data.connect(ui.callback_function1)
+    thread1.start()
+
+    thread2 = Thread_2()
+    thread2.data.connect(ui.callback_function2)
+    thread2.start()
+
+    thread3 = Thread_2()
+    thread3.data.connect(ui.callback_function3)
+    thread3.start()
+
     sys.exit(app.exec_())

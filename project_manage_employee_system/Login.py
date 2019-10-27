@@ -114,6 +114,7 @@ class Ui_MainWindow(QtWidgets.QDialog):
         self.ui = q_li_nv.Ui_QMainWindow()
         self.ui.setupUi(self.ql_nv_form)
         self.ql_nv_form.show()
+        
 
 import image_rc
 
